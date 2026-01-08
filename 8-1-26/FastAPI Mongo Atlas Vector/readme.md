@@ -112,7 +112,7 @@ python ingest/ingest.py
 
 The dataset file is included in the repository. A public link to the dataset source can also be provided here:
 
-* Dataset source: <DATASET_LINK>
+* Dataset source: https://www.kaggle.com/datasets/denvermagtibay/ai-generated-essays-dataset
 
 ---
 

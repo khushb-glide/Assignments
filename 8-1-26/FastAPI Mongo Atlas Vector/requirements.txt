@@ -1,9 +1,0 @@
-fastapi
-uvicorn
-pymongo
-requests
-mongo
-python-dotenv
-httpx
-pandas
-dotenv

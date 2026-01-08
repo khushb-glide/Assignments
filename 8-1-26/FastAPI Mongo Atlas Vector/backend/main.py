@@ -1,0 +1,51 @@
+from dotenv import load_dotenv
+load_dotenv()
+
+from fastapi import FastAPI
+from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
+from pathlib import Path
+from pydantic import BaseModel
+
+from backend.embed import get_embedding
+from backend.db import vectors_collection
+from backend.search import search_vectors
+
+
+app = FastAPI()
+
+# Serve frontend folder as /static
+app.mount("/static", StaticFiles(directory="frontend"), name="static")
+
+
+class InsertRequest(BaseModel):
+    text: str
+
+
+class SearchRequest(BaseModel):
+    query: str
+
+
+@app.get("/health")
+def health():
+    return {"status": "ok"}
+
+
+@app.get("/", response_class=HTMLResponse)
+def ui():
+    return Path("frontend/vectors.html").read_text()
+
+
+@app.post("/insert")
+def insert_document(req: InsertRequest):
+    embedding = get_embedding(req.text)
+    vectors_collection.insert_one({
+        "text": req.text,
+        "embedding": embedding
+    })
+    return {"status": "inserted"}
+
+
+@app.post("/search")
+def search(req: SearchRequest):
+    return search_vectors(req.query)
